@@ -3,6 +3,7 @@ module Data.Geo.WKT.Parser where
 import Data.Geo.WKT.Types
 import Linear
 import Control.Applicative
+import Control.Monad (ap)
 import Text.ParserCombinators.Parsec hiding (many)
 import Text.ParserCombinators.Parsec.Number hiding (number)
 
@@ -20,7 +21,7 @@ fieldSep :: Parser ()
 fieldSep = char ',' >> spaces
 
 number :: Parser Double
-number = floating2 True
+number = sign `ap` floating2 True
 
 twinAxes = do
     ax1 <- axis
