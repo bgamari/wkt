@@ -68,7 +68,6 @@ axis = object "AXIS" $ do
 projection :: Parser Projection
 projection = object "PROJECTION" $ do
     name <- quotedString
-    fieldSep
     auth <- optionMaybe $ fieldSep *> authority
     return $ Proj name auth
 
