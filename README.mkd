@@ -1,0 +1,10 @@
+# wkt - A Haskell Well-Known Text parser
+
+Well-known text (wkt) is a format for representing vector geometries
+and spatial reference systems in digital mapping. This is a parser for
+wkt data.
+
+## References
+
+ * https://en.wikipedia.org/wiki/Well-known_text
+ * http://www.geoapi.org/3.0/javadoc/org/opengis/referencing/doc-files/WKT.html
