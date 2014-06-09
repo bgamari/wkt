@@ -1,7 +1,7 @@
 module Data.Geo.WKT.Parser where
 
 import Data.Geo.WKT.Types
-import Linear
+import Linear hiding (unit)
 import Control.Applicative
 import Control.Monad (ap)
 import Text.ParserCombinators.Parsec hiding (many)
