@@ -1,7 +1,11 @@
 name:                wkt
-version:             0.2
-synopsis:            Parsers and types for Well-Known Text data
-description:         Parsers and types for Well-Known Text data
+version:             0.2.1
+synopsis:            Parsec parsers and types for geographic data in well-known text (WKT) format.
+description:
+  Parsec parsers and types for geographic metadata in the well-known
+  text (WKT) format <https://en.wikipedia.org/wiki/Well-known_text>.
+  WKT can be used to specify spatial reference systems and primitive
+  geometry in spatial datasets.
 homepage:            http://github.com/bgamari/wkt
 license:             BSD3
 license-file:        LICENSE
