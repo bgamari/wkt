@@ -1,5 +1,5 @@
 name:                wkt
-version:             0.2.2
+version:             0.2.3
 synopsis:            Parsec parsers and types for geographic data in well-known text (WKT) format.
 description:
   Parsec parsers and types for geographic metadata in the well-known
