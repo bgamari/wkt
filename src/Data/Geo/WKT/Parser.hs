@@ -3,26 +3,29 @@ module Data.Geo.WKT.Parser where
 import Data.Geo.WKT.Types
 import Linear hiding (unit)
 import Control.Applicative
-import Control.Monad (ap)
-import Text.ParserCombinators.Parsec hiding (many)
-import Text.ParserCombinators.Parsec.Number hiding (number)
+import Control.Monad (void)
+import Text.Trifecta
 
 object :: String -> Parser a -> Parser a
 object keyword parser = do
-    string keyword
+    void $ string keyword
     between (char '[') (char ']') parser
 
 quotedString :: Parser String
 quotedString = do
-    char '"'
+    void $ char '"'
     manyTill anyChar (char '"')
 
 fieldSep :: Parser ()
 fieldSep = char ',' >> spaces
 
 number :: Parser Double
-number = sign `ap` floating2 True
+number = do
+    sign <- (char '+' >> pure id) <|> (char '-' >> pure negate) <|> pure id
+    n <- double
+    return (sign n)
 
+twinAxes :: Parser (Axis, Axis)
 twinAxes = do
     ax1 <- axis
     fieldSep
@@ -35,7 +38,7 @@ unit = object "UNIT" $ do
     name <- quotedString
     fieldSep
     conv <- number
-    auth <- optionMaybe $ fieldSep *> authority
+    auth <- optional $ fieldSep *> authority
     return $ Unit name conv auth
 
 parameter :: Parser Parameter
@@ -69,7 +72,7 @@ axis = object "AXIS" $ do
 projection :: Parser Projection
 projection = object "PROJECTION" $ do
     name <- quotedString
-    auth <- optionMaybe $ fieldSep *> authority
+    auth <- optional $ fieldSep *> authority
     return $ Proj name auth
 
 spheroid :: Parser Spheroid
@@ -79,7 +82,7 @@ spheroid = object "SPHEROID" $ do
     semiMajor <- number
     fieldSep
     invFlat <- number
-    auth <- optionMaybe $ fieldSep *> authority
+    auth <- optional $ fieldSep *> authority
     return $ Spheroid name semiMajor invFlat auth
 
 datum :: Parser Datum
@@ -87,8 +90,8 @@ datum = object "DATUM" $ do
     name <- quotedString
     fieldSep
     s <- spheroid
-    wgs <- optionMaybe $ fieldSep *> toWGS84
-    auth <- optionMaybe $ fieldSep *> authority
+    wgs <- optional $ fieldSep *> toWGS84
+    auth <- optional $ fieldSep *> authority
     return $ Datum name s wgs auth
 
 primeMeridian :: Parser PrimeMeridian
@@ -96,7 +99,7 @@ primeMeridian = object "PRIMEM" $ do
     name <- quotedString
     fieldSep
     long <- number
-    auth <- optionMaybe $ fieldSep *> authority
+    auth <- optional $ fieldSep *> authority
     return $ PrimeMeridian name long auth
 
 toWGS84 :: Parser ToWGS84
@@ -116,8 +119,8 @@ projectedCS = object "PROJCS" $ do
     fieldSep
     params <- many $ parameter <* fieldSep
     linearUnit <- unit
-    axes <- optionMaybe $ fieldSep *> twinAxes
-    auth <- optionMaybe $ fieldSep *> authority
+    axes <- optional $ fieldSep *> twinAxes
+    auth <- optional $ fieldSep *> authority
     return $ ProjCS name geogcs proj params linearUnit axes auth
 
 geographicCS :: Parser GeographicCS
@@ -129,6 +132,6 @@ geographicCS = object "GEOGCS" $ do
     primem <- primeMeridian
     fieldSep
     angularUnit <- unit
-    axes <- optionMaybe $ fieldSep *> twinAxes
-    auth <- optionMaybe $ fieldSep *> authority
+    axes <- optional $ fieldSep *> twinAxes
+    auth <- optional $ fieldSep *> authority
     return $ GeogCS name dat primem angularUnit axes auth
