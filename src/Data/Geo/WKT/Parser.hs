@@ -11,7 +11,7 @@ object :: String -> Parser a -> Parser a
 object keyword parser = do
     string keyword
     between (char '[') (char ']') parser
-   
+
 quotedString :: Parser String
 quotedString = do
     char '"'
@@ -25,7 +25,7 @@ number = sign `ap` floating2 True
 
 twinAxes = do
     ax1 <- axis
-    fieldSep 
+    fieldSep
     ax2 <- axis
     fieldSep
     return (ax1, ax2)
@@ -37,13 +37,13 @@ unit = object "UNIT" $ do
     conv <- number
     auth <- optionMaybe $ fieldSep *> authority
     return $ Unit name conv auth
-    
+
 parameter :: Parser Parameter
 parameter = object "PARAMETER" $ do
     name <- quotedString
     fieldSep
     value <- number
-    return $ Parameter name value 
+    return $ Parameter name value
 
 authority :: Parser Authority
 authority = object "AUTHORITY" $ do
@@ -81,9 +81,9 @@ spheroid = object "SPHEROID" $ do
     invFlat <- number
     auth <- optionMaybe $ fieldSep *> authority
     return $ Spheroid name semiMajor invFlat auth
-     
+
 datum :: Parser Datum
-datum = object "DATUM" $ do             
+datum = object "DATUM" $ do
     name <- quotedString
     fieldSep
     s <- spheroid
@@ -98,11 +98,11 @@ primeMeridian = object "PRIMEM" $ do
     long <- number
     auth <- optionMaybe $ fieldSep *> authority
     return $ PrimeMeridian name long auth
-    
+
 toWGS84 :: Parser ToWGS84
 toWGS84 = object "TOWGS84" $ do
-    d <- V3 <$> number <*> number <*> number        
-    e <- V3 <$> number <*> number <*> number        
+    d <- V3 <$> number <*> number <*> number
+    e <- V3 <$> number <*> number <*> number
     ppm <- number
     return $ ToWGS84 d e ppm
 
@@ -119,7 +119,7 @@ projectedCS = object "PROJCS" $ do
     axes <- optionMaybe $ fieldSep *> twinAxes
     auth <- optionMaybe $ fieldSep *> authority
     return $ ProjCS name geogcs proj params linearUnit axes auth
-    
+
 geographicCS :: Parser GeographicCS
 geographicCS = object "GEOGCS" $ do
     name <- quotedString
@@ -132,4 +132,3 @@ geographicCS = object "GEOGCS" $ do
     axes <- optionMaybe $ fieldSep *> twinAxes
     auth <- optionMaybe $ fieldSep *> authority
     return $ GeogCS name dat primem angularUnit axes auth
-    
