@@ -1,5 +1,5 @@
 name:                wkt
-version:             0.3.1
+version:             0.3.2
 synopsis:            Parsec parsers and types for geographic data in well-known text (WKT) format.
 description:
   Parsec parsers and types for geographic metadata in the well-known
@@ -23,10 +23,10 @@ source-repository head
 library
   exposed-modules:     Data.Geo.WKT, Data.Geo.WKT.Types, Data.Geo.WKT.Parser
   other-extensions:    TemplateHaskell
-  build-depends:       base >=4.6 && <4.10,
-                       lens >=3.9 && <4.15,
+  build-depends:       base >=4.6 && <4.11,
+                       lens >=3.9 && <4.16,
                        linear >=1.3 && <1.21,
-                       trifecta >=1.5 && <1.7
+                       trifecta >=1.5 && <1.8
   hs-source-dirs:      src
   default-language:    Haskell2010
 
